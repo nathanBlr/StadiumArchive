@@ -1,0 +1,9 @@
+/* Stadium-resource.css */
+body {
+    background-color: #f0f8ff; /* Light Blue */
+}
+
+.card-header {
+    background-color: #4682b4; /* Steel Blue */
+    color: white;
+}
