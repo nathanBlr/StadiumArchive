@@ -15,11 +15,12 @@ class CreateStadium extends CreateRecord
             Action::make('return')
                 ->label('')
                 ->icon('heroicon-o-arrow-uturn-left')
+                ->tooltip('return to list')
                 ->url($this->getRedirectUrl()),
         ];
     }
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl('list');
     }
 }

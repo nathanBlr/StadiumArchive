@@ -7,6 +7,7 @@ use App\Filament\Resources\CountryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\ImportAction;
+use Illuminate\Validation\Rules\File;
 
 class ListCountries extends ListRecords
 {
@@ -16,9 +17,9 @@ class ListCountries extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            ImportAction::make('Country')
-                    ->importer(CountryImporter::class),
-            
-        ];
+            ImportAction::make('country')
+                    ->importer(CountryImporter::class)
+                    
+            ];
     }
 }

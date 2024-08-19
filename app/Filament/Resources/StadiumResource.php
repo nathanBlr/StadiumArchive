@@ -12,8 +12,10 @@ use App\Models\Stadium;
 use App\Models\State;
 use Filament\Actions\ViewAction;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
@@ -39,9 +41,9 @@ use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 class StadiumResource extends Resource
 {
     protected static ?string $model = Stadium::class;
-
+    
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
-
+    
     public static function getModelLabel(): string
     {
         return __('stadiums');
@@ -119,8 +121,17 @@ class StadiumResource extends Resource
                                 ->preload()
                                 ->options(Country::all()->pluck('name', 'name')->toArray()) // Store the name
                                 ->reactive()
-                                ->afterStateUpdated(fn (callable $set) => $set('state', null)),
-
+                                ->afterStateUpdated(fn (callable $set) => $set('state', null))
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->maxLength(255),
+                                    ColorPicker::make('country_nacional_color'),
+                                ])
+                                ->createOptionUsing(fn ($data) => Country::create([
+                                    'name' => $data['name'],
+                                    'country_nacional_color' => $data['country_nacional_color'],
+                                ])),
                             Forms\Components\Select::make('state')
                                 ->label('State')
                                 ->preload()
@@ -132,7 +143,22 @@ class StadiumResource extends Resource
                                     return $country->states->pluck('name', 'name'); // Store the name
                                 })
                                 ->reactive()
-                                ->afterStateUpdated(fn (callable $set) => $set('city', null)),
+                                ->afterStateUpdated(fn (callable $set) => $set('city', null))
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->label('Name'),
+                                    Select::make('country_id')
+                                    ->label('Countries')
+                                        //->relationship('country','name')
+                                        ->options(function (callable $get) {
+                                            return Country::all()->pluck('name', 'id'); // Use 'id' for the value, 'name' for display
+                                        })
+                                ])
+                                ->createOptionUsing(fn ($data) => State::create([
+                                    'name' => $data['name'],
+                                    'country_id' => $data['country_id'],
+                                ])),
 
                             Forms\Components\Select::make('city')
                                 ->label('City')
@@ -143,7 +169,35 @@ class StadiumResource extends Resource
                                         return City::all()->pluck('name', 'name'); // Store the name
                                     }
                                     return $state->cities->pluck('name', 'name'); // Store the name
-                                }),
+                                })
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->label('Name'),
+                                    Forms\Components\Select::make('country')
+                                        ->label('Country')
+                                        ->preload()
+                                        ->options(Country::all()->pluck('name', 'name')->toArray()) // Still using the name for country selection
+                                        ->reactive()
+                                        ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
+
+                                    Forms\Components\Select::make('state_id')
+                                        ->label('State')
+                                        ->preload()
+                                        ->options(function (callable $get) {
+                                            $country = Country::where('name', $get('country'))->first();
+                                            if (!$country) {
+                                                return State::all()->pluck('name', 'id'); // Use 'id' for the value, 'name' for display
+                                            }
+                                            return $country->states->pluck('name', 'id'); // Use 'id' for the value, 'name' for display
+                                        })
+                                        ->reactive()
+                                        ->afterStateUpdated(fn (callable $set) => $set('city', null)),
+                                ])
+                                ->createOptionUsing(fn ($data) => City::create([
+                                    'name' => $data['name'],
+                                    'country' => $data['country'],
+                                    'state_id' => $data['state_id'],
+                                ])),
 
 
                             Forms\Components\TextInput::make('address')
@@ -199,11 +253,12 @@ class StadiumResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->recordClasses(fn(Stadium $record) => match($record->id)
-        {
-            default => 'border-l-2 bg-[#270fff] m-4',
-            false => null
+        ->recordClasses(fn(Stadium $record, Country $recordCountry) => match($record->country) {
+            $recordCountry->name =>'border-l-2 m-4 bg-['.$recordCountry->country_nacional_color.']',
+            default => 'border-l-2 m-4 bg-[#ff6490]',
+            false => null,
         })
+        //->style(fn(Stadium $record) => 'background-color: ' . $record->country->country_nacional_color . ';')               
             ->columns([
                 ImageColumn::make('photo_1')
                 ->label('Picture')
@@ -270,6 +325,9 @@ class StadiumResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ])
             ->filters([
                 Filter::make('country')

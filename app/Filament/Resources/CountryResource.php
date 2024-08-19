@@ -7,12 +7,14 @@ use App\Filament\Resources\CountryResource\Pages;
 use App\Filament\Resources\CountryResource\RelationManagers;
 use App\Models\Country;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ImportAction;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,12 +26,14 @@ class CountryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Locations';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Fieldset::make('Country')->schema([
                     TextInput::make('name'),
+                    ColorPicker::make('country_nacional_color')
                 ])
             ]);
     }
@@ -40,6 +44,7 @@ class CountryResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('name'),
+                ColorColumn::make('country_nacional_color'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -53,6 +58,8 @@ class CountryResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ])->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 

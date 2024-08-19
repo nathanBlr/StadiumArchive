@@ -12,6 +12,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,6 +23,10 @@ class CityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Cities';
+
+    protected static ?string $resourceLabel = 'City';
+    protected static ?string $navigationGroup = 'Locations';
     public static function form(Form $form): Form
     {
         return $form
@@ -57,7 +62,8 @@ class CityResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name'),
+                TextColumn::make('state.name'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -71,6 +77,8 @@ class CityResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ])->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 

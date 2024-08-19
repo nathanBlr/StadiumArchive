@@ -6,9 +6,11 @@ use App\Models\Country;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Illuminate\Http\UploadedFile;
 
 class CountryImporter extends Importer
 {
+    
     protected static ?string $model = Country::class;
 
     public static function getColumns(): array
@@ -20,6 +22,16 @@ class CountryImporter extends Importer
         ];
     }
 
+    public function handle(UploadedFile $file)
+    {
+        $mimeType = $file->getClientMimeType();
+
+        if (!in_array($mimeType, ['text/csv', 'text/x-csv', 'application/csv'])) {
+            throw new \Exception('Invalid file type. Please upload a CSV file.');
+        }
+
+        parent::handle($file);
+    }
 
     public function resolveRecord(): ?Country
     {
