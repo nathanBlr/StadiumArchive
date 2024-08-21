@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\StadiumResource\Pages;
 
 use App\Filament\Resources\StadiumResource;
-use App\Filament\Widgets\StadiumsMap;
+use App\Filament\Resources\StadiumResource\Widgets\StadiumMap;
 use App\Models\Stadium;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
@@ -39,7 +39,7 @@ class StadiumIndex extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            StadiumsMap::class,
+            StadiumMap::class,
         ];
     }
 }

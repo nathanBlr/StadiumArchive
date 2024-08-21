@@ -37,11 +37,13 @@ class StatsOverview extends BaseWidget
         $labelCity = $cityWithMostStadiums ? $cityWithMostStadiums->city: 'N/A';
         $valueCity = $cityWithMostStadiums ? $cityWithMostStadiums->total : 0;
         //
-        $mostSport = Sport::select('name',DB::raw('count(*) as total'))
-        ->groupBy('name')
-        ->orderByDesc('total')
-        ->first();
-        $labelSport = $mostSport ? $mostSport->name: 'N/A';
+        $mostSport = Sport::select('sports.name', DB::raw('count(sport_stadium.sport_id) as total'))
+            ->join('sport_stadium', 'sports.id', '=', 'sport_stadium.sport_id')
+            ->groupBy('sports.name')
+            ->orderByDesc('total')
+            ->first();
+
+        $labelSport = $mostSport ? $mostSport->name : 'N/A';
         $valueSport = $mostSport ? $mostSport->total : 0;
         //
         $startDate = $this->filters['startDate'] ?? null;

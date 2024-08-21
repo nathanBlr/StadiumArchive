@@ -9,7 +9,8 @@ export default {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
-        "./node_modules/flowbite/**/*.js"
+        "./node_modules/flowbite/**/*.js",
+        './vendor/awcodes/filament-curator/resources/**/*.blade.php',
     ],
     plugins: [
         require('flowbite/plugin')

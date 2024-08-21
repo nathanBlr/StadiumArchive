@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StateResource\Pages;
 use App\Filament\Resources\StateResource\RelationManagers;
+use App\Models\Country;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
@@ -12,6 +13,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,7 +22,7 @@ class StateResource extends Resource
 {
     protected static ?string $model = State::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
     protected static ?string $navigationGroup = 'Locations';
     public static function form(Form $form): Form
@@ -46,6 +48,25 @@ class StateResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Filter::make('country')
+                    ->form([
+                        Select::make('country')
+                            ->options(Country::query()
+                                ->orderBy('name')
+                                ->pluck('name', 'id')
+                                ->toArray())
+                            ->placeholder('Select a country')
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('state', null); // Reset state when country changes
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!empty($data['country'])) {
+                            $query->where('country_id', $data['country']);
+                        }
+                        return $query;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

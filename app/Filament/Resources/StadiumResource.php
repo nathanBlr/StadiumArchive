@@ -4,13 +4,13 @@ namespace App\Filament\Resources;
 
 use AbanoubNassem\FilamentPhoneField\Forms\Components\PhoneInput;
 use App\Filament\Resources\StadiumResource\Pages;
-use App\Filament\Resources\StadiumResource\RelationManagers;
-use App\Filament\Resources\StadiumResource\Widgets\StatsOverview;
+use App\Filament\Resources\StadiumResource\Widgets\StadiumMap;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Sport;
 use App\Models\Stadium;
 use App\Models\State;
-use Filament\Actions\ViewAction;
+use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Fieldset;
@@ -20,17 +20,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ViewAction as ActionsViewAction;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\View;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use Illuminate\Cache\TagSet;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -104,11 +104,14 @@ class StadiumResource extends Resource
                     Tab::make('Images')->icon('heroicon-o-photo')->schema([
                         Fieldset::make('')->schema([
                             FileUpload::make('photo_1')
-                                ->image(),
+                                ->image()
+                                ->maxSize(140000000),
                             FileUpload::make('photo_2')
-                                ->image(),
+                                ->image()
+                                ->maxSize(140000000),
                             FileUpload::make('photo_3')
-                                ->image(),
+                                ->image()
+                                ->maxSize(140000000),
                         ])
                     ]),
                     //dd(Country::all()->pluck('name', 'id')->toArray()),
@@ -203,6 +206,12 @@ class StadiumResource extends Resource
                             Forms\Components\TextInput::make('address')
                                 ->required()
                                 ->maxLength(255),
+                            TextInput::make('latitude')
+                                ->required()
+                                ->maxLength(255),
+                            TextInput::make('longitude')
+                                ->required()
+                                ->maxLength(255),
                             Forms\Components\TextInput::make('zip_code')
                                 ->maxLength(255),
                         ]),
@@ -255,11 +264,13 @@ class StadiumResource extends Resource
         return $table
         ->recordClasses(fn(Stadium $record, Country $recordCountry) => match($record->country) {
             $recordCountry->name =>'border-l-2 m-4 bg-['.$recordCountry->country_nacional_color.']',
-            default => 'border-l-2 m-4 bg-[#ff6490]',
+            default => 'border-l-2 m-4 bg-[#2D54D4]',
             false => null,
         })
         //->style(fn(Stadium $record) => 'background-color: ' . $record->country->country_nacional_color . ';')               
             ->columns([
+                TextColumn::make('id')
+                    ->sortable(),
                 ImageColumn::make('photo_1')
                 ->label('Picture')
                 ->circular(),
@@ -297,6 +308,18 @@ class StadiumResource extends Resource
                 Tables\Columns\TextColumn::make('city')
                     ->searchable()
                     ->sortable(),
+                MapColumn::make('location')
+                    ->extraAttributes([
+                      'class' => 'my-funky-class'
+                    ]) // Optionally set any additional attributes, merged into the wrapper div around the image tag
+                    ->extraImgAttributes(
+                        fn ($record): array => ['title' => $record->latitude . ',' . $record->longitude]
+                    ) // Optionally set any additional attributes you want on the img tag
+                    ->height('150') // API setting for map height in PX
+                    ->width('250') // API setting got map width in PX
+                    ->type('hybrid') // API setting for map type (hybrid, satellite, roadmap, tarrain)
+                    ->zoom(15) // API setting for zoom (1 through 20)
+                    ->ttl(60 * 60 * 24 * 30), // number of seconds to cache image before refetching from API
                 Tables\Columns\TextColumn::make('capacity')
                     ->numeric()
                     ->sortable()
@@ -411,7 +434,27 @@ class StadiumResource extends Resource
                         return $query->where('city', $data['city']);
                     }
                     return $query;
-                })             
+                }),
+                Filter::make('Sport')
+                ->form([
+                    Select::make('Sport')
+                        ->options(Sport::query()
+                            ->orderBy('name')
+                            ->pluck('name', 'id')
+                            ->toArray())
+                        ->placeholder('Select a sport')
+                        ->reactive(),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    if (!empty($data['Sport'])) {
+                        $query->whereHas('sport', function ($subQuery) use ($data) {
+                            $subQuery->where('sport_id', $data['Sport']);
+                        });
+                    }
+            
+                    return $query;
+                })
+  
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action
@@ -465,7 +508,12 @@ class StadiumResource extends Resource
             'view' => Pages\ViewStadium::route('/{record}'),
         ];
     }
-
+    public static function getWidgets(): array
+    {
+        return [
+            StadiumMap::class,
+        ];
+    }
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

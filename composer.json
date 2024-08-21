@@ -10,6 +10,8 @@
     "require": {
         "php": "^8.1",
         "abanoubnassem/filament-phone-field": "^0.0.6",
+        "awcodes/filament-curator": "^3.6",
+        "cheesegrits/filament-google-maps": "3.0",
         "codewithdennis/filament-simple-map": "*",
         "filament/filament": "3.2",
         "filament/infolists": "3.2",
@@ -20,6 +22,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "larswiegers/laravel-maps": "^0.18.0",
         "mohamedsabil83/filament-forms-tinyeditor": "^2.3",
         "mokhosh/filament-rating": "^1.1",
         "pelmered/filament-money-field": "^1.3",

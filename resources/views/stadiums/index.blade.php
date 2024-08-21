@@ -7,7 +7,7 @@
     <!-- Carousel wrapper -->
     @if($stadium == Null)
     @else
-    <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+    <div class="relative h-56 overflow-hidden rounded-lg md:h-96 focus:outline-none focus:ring-blue-300">
          <!-- Item 1 -->
         @if ($stadium->photo_1)
         <div class="hidden duration-700 ease-in-out" data-carousel-item>

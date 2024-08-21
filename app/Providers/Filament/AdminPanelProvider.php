@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\StadiumResource\Widgets\StatsOverview;
 use App\Filament\Widgets\StadiumsMap;
+use App\Models\Stadium;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -75,10 +76,19 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 ThemesPlugin::make(),
                 ActivitylogPlugin::make()
-                ->label('Log')
-                ->pluralLabel('Logs'),
+                    ->label('Log')
+                    ->pluralLabel('Logs'),
                 FilamentBackgroundsPlugin::make()
-                ->showAttribution(false),
+                    ->showAttribution(false),
+                \Awcodes\Curator\CuratorPlugin::make()
+                    ->label('Media')
+                    ->pluralLabel('Media')
+                    ->navigationIcon('heroicon-o-photo')
+                    ->navigationGroup('Content')
+                    ->navigationSort(3)
+                    ->navigationCountBadge()
+                    ->registerNavigation(false)
+                    ->defaultListView('grid' || 'list')
             ]);
     }
 }

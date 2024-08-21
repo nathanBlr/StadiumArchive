@@ -17,6 +17,7 @@ class Stadium extends Model
     protected $casts = [
         'tenants' => 'array',
     ];
+    
     protected $fillable = [
         'name',
         'full_name',
@@ -48,8 +49,40 @@ class Stadium extends Model
         'construction_start_date',
         'construction_end_date',
         'tenants',
-        'sport_id'
+        'sport_id',
+        'latitude',
+        'longitude',
+        'location',
     ];
+
+    protected $appends = [
+        'address',
+        'location',
+    ];    
+    public function getAddressAttribute(): array
+    {
+        return [
+            "lat" => (float)$this->latitude,
+            "lng" => (float)$this->longitude,
+        ];
+    }
+    public function getLocationAttribute(?array $location): void
+    {
+        if (is_array($location))
+        {
+            $this->attributes['latitude'] = $location['lat'];
+            $this->attributes['longitude'] = $location['lng'];
+            unset($this->attributes['location']);
+        }
+    }
+
+    public static function getLatLngAttributes(): array
+    {
+        return [
+            'lat' => 'latitude',
+            'lng' => 'longitude',
+        ];
+    }
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
