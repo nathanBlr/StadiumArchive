@@ -17,5 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')->group(function () {
     Route::get('/', [RotasController::class, 'index'])->name('index');
     Route::get('/search', [RotasController::class, 'search'])->name('search');
-    Route::get('/details/{id}', [RotasController::class, 'details'])->name('details');
+    Route::get('/details/{slug}', [RotasController::class, 'details'])->name('details');
 });

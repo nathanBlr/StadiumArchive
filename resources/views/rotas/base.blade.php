@@ -7,18 +7,18 @@
     @vite(['resources/css/app.css','resources/js/app.js'])
     <title>@yield('title', 'Base')</title>
 </head>
-<body class="bg-[#2d54d4] relative">
+<body class="bg-[#041932] relative">
     <header >
-<nav class="bg-[#2d54d4] border-[#2d54d4] dark:bg-gray-900 mb-6 border-4">
+<nav class="bg-[#041932] border-[#041932] dark:bg-gray-900 mb-6 border-4 ">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a href="{{ route('index') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Stadium Archive</span>
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-[#041932]">Stadium Archive</span>
     </a>
     
     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <a href="/admin">
-          <button type="button" class="text-[#2d54d4] bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 hover:text-white font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        <a href="/admin" class="bg-[#041932] shadow hover:bg-white hoover:shadow text-white hove:text-[#041932] font-medium rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 hover:text-[#041932]">
+          <button type="button" class="text-inherit bg-inherit font-inherit rounded-inherit  text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             @auth
                 Admin Panel
             @else
@@ -40,16 +40,16 @@
     </header>
     <div>
 
-      <form class="max-w-md mx-auto pt-3 mb-4" action="{{ route('search') }}" method="GET">
-          <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+      <form class="max-w-md mx-auto pt-3 mb-4 drop-shadow-lg " action="{{ route('search') }}" method="GET">
+          <label for="default-search" class="mb-2 text-sm   font-medium text-gray-900 sr-only dark:text-white">Search</label>
           <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                   </svg>
               </div>
-              <input type="search" id="default-search" name="query" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
-              <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+              <input type="search" id="default-search" name="query" class="block w-full p-4 ps-10 text-sm text-white border border-[#041932] rounded-lg  focus:ring-white focus:border-[#041932] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 bg-[#041932]" placeholder="Search Stadiums" required />
+              <button type="submit" class="text-[#041932] absolute end-2.5 bottom-2.5 bg-white hover:bg-[#041932]  hover:text-white hover:shadow focus:ring-4 hover:ring-white focus:outline-none focus:ring-[#041932] font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
           </div>
       </form>
     
@@ -57,27 +57,28 @@
     @yield('content')
 
 
-<footer class="bg-[#2d54d4] shadow relative left-0 right-0 border-[#2d54d4] bottom-0 dark:bg-gray-900 mt-4 border-4 pb-0 mb-0 align-bottom" >
-  <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-      <div class="sm:flex sm:items-center sm:justify-between">
-          <a href="https://flowbite.com/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-              <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Stadium Archive</span>
-          </a>
-          <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-              <li>
-                  <a href="#" class="hover:underline me-4 md:me-6">About</a>
-              </li>
-              <li>
-                  <a href="#" class="hover:underline">Contact</a>
-              </li>
-          </ul>
-      </div>
-      <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-      <span class="block text-sm text-white sm:text-center dark:text-gray-400">© 2024 <a href="https://github.com/nathanBlr" class="hover:underline">Blair Nathaniel™</a>. All Rights Reserved.</span>
-  </div>
-</footer>
+
 
 
 </body>
+<footer class="bg-[#041932] left-0  w-full relative border-[#041932] bottom-0 dark:bg-gray-900 mt-4 border-4 pb-0 mb-0 align-bottom" >
+    <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+        <div class="sm:flex sm:items-center sm:justify-between">
+            <a href="https://flowbite.com/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">Stadium Archive</span>
+            </a>
+            <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-white sm:mb-0 dark:text-gray-400">
+                <li>
+                    <a href="#" class="hover:underline me-4 md:me-6">About</a>
+                </li>
+                <li>
+                    <a href="#" class="hover:underline">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+        <span class="block text-sm text-white sm:text-center dark:text-gray-400">© 2024 <a href="https://github.com/nathanBlr" class="hover:underline">Blair Nathaniel™</a>. All Rights Reserved.</span>
+    </div>
+  </footer>
 </html>

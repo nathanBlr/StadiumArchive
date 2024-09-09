@@ -18,6 +18,7 @@ return new class extends Migration
         Schema::create('stadia', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('full_name')->nullable();
             $table->string('address');
             $table->string('latitude')->nullable();

@@ -39,9 +39,9 @@ class RotasController extends Controller
 }
 
 
-    public function details($id)
+    public function details($slug)
     {   
-        $stadium = Stadium::where('id',$id)->first();
+        $stadium = Stadium::where('slug',$slug)->first();
 
         return view('stadiums.stadium', compact('stadium'));
     }

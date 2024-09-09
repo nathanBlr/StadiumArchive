@@ -11,6 +11,7 @@ use App\Models\Sport;
 use App\Models\Stadium;
 use App\Models\State;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Fieldset;
@@ -37,6 +38,8 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Mokhosh\FilamentRating\Components\Rating;
 use Mokhosh\FilamentRating\RatingTheme;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Illuminate\Support\Str;
+use Filament\Forms\Set;
 
 class StadiumResource extends Resource
 {
@@ -60,8 +63,18 @@ class StadiumResource extends Resource
                     Tab::make('Informations')->icon('heroicon-o-identification')->schema([
                         Fieldset::make('')->schema([
                             Forms\Components\TextInput::make('name')
-                                ->required()
-                                ->maxLength(255),
+                            ->live()
+                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                            ->reactive()
+                            ->required(),
+                        TextInput::make('slug')
+                            ->afterStateUpdated(function (Closure $set) {
+                                $set('is_slug_changed_manually', true);
+                            })
+                            ->required(),
+                        Hidden::make('is_slug_changed_manually')
+                            ->default(false)
+                            ->dehydrated(false),
                             Forms\Components\TextInput::make('full_name')
                                 ->maxLength(255),
                             PhoneInput::make('phone_number')

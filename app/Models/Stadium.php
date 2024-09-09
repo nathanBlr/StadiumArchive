@@ -19,13 +19,14 @@ class Stadium extends Model
     ];
     
     protected $fillable = [
-        'name',
-        'full_name',
+        'name', //
+        'slug',
+        'full_name', //
         'address',
         'zip_code',
-        'phone_number',
-        'email',
-        'website',
+        'phone_number', //
+        'email', //
+        'website', //
         'services',
         'amenities',
         'features',
@@ -44,7 +45,7 @@ class Stadium extends Model
         'country',
         'state',
         'city',
-        'capacity',
+        'capacity', //
         'construction_price',
         'construction_start_date',
         'construction_end_date',
